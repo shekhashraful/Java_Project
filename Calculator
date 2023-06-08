@@ -1,0 +1,120 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Calculator extends JFrame {
+    private JTextField textField;
+    private JButton[] numberButtons;
+    private JButton[] functionButtons;
+    private JButton addButton, subButton, mulButton, divButton;
+    private JButton equalButton, decimalButton, clearButton;
+    private JPanel panel;
+
+    private double num1, num2, result;
+    private char operator;
+
+    public Calculator() {
+        setTitle("Calculator");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(300, 400);
+        setResizable(false);
+
+        textField = new JTextField();
+        textField.setPreferredSize(new Dimension(300, 50));
+        textField.setFont(new Font("Arial", Font.PLAIN, 20));
+        textField.setHorizontalAlignment(JTextField.RIGHT);
+        textField.setEditable(false);
+
+        numberButtons = new JButton[10];
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i] = new JButton(String.valueOf(i));
+            numberButtons[i].setFont(new Font("Arial", Font.PLAIN, 20));
+        }
+
+        functionButtons = new JButton[6];
+        addButton = new JButton("+");
+        subButton = new JButton("-");
+        mulButton = new JButton("*");
+        divButton = new JButton("/");
+        equalButton = new JButton("=");
+        decimalButton = new JButton(".");
+        clearButton = new JButton("C");
+
+        functionButtons[0] = addButton;
+        functionButtons[1] = subButton;
+        functionButtons[2] = mulButton;
+        functionButtons[3] = divButton;
+        functionButtons[4] = equalButton;
+        functionButtons[5] = clearButton;
+
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 4, 10, 10));
+
+        for (int i = 1; i <= 9; i++) {
+            panel.add(numberButtons[i]);
+            numberButtons[i].addActionListener(new NumberButtonListener());
+        }
+
+        panel.add(addButton);
+        panel.add(numberButtons[0]);
+        panel.add(subButton);
+        panel.add(mulButton);
+        panel.add(divButton);
+        panel.add(equalButton);
+        panel.add(decimalButton);
+        panel.add(clearButton);
+
+        for (int i = 0; i < 6; i++) {
+            functionButtons[i].setFont(new Font("Arial", Font.PLAIN, 20));
+            panel.add(functionButtons[i]);
+        }
+
+        setLayout(new FlowLayout());
+        add(textField);
+        add(panel);
+
+        addButton.addActionListener(new FunctionButtonListener());
+        subButton.addActionListener(new FunctionButtonListener());
+        mulButton.addActionListener(new FunctionButtonListener());
+        divButton.addActionListener(new FunctionButtonListener());
+        equalButton.addActionListener(new FunctionButtonListener());
+        decimalButton.addActionListener(new DecimalButtonListener());
+        clearButton.addActionListener(new ClearButtonListener());
+
+        setVisible(true);
+    }
+
+    private class NumberButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JButton button = (JButton) e.getSource();
+            textField.setText(textField.getText() + button.getText());
+        }
+    }
+
+    private class FunctionButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JButton button = (JButton) e.getSource();
+            num1 = Double.parseDouble(textField.getText());
+            operator = button.getText().charAt(0);
+            textField.setText("");
+        }
+    }
+
+    private class DecimalButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if (!textField.getText().contains(".")) {
+                textField.setText(textField.getText() + ".");
+            }
+        }
+    }
+
+    private class ClearButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            textField.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Calculator();
+    }
+}
